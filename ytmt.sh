@@ -12,7 +12,7 @@ NC='\033[0m' # No Color
 # Functions to display headers and footers
 header() {
     echo -e "${CYAN}====================================================${NC}"
-    echo -e "${PURPLE}            YouTube Video Downloader ${NC}"
+    echo -e "${PURPLE}            YouTube Video Downloader By MT ${NC}"
     echo -e "${CYAN}====================================================${NC}"
 }
 
