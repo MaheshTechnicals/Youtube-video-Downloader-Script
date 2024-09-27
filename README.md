@@ -6,9 +6,8 @@ This repository contains a script to download YouTube videos in various quality 
 ## Features
 
 - Download YouTube videos in MP4 format.
-- Quality options:
-  - 2160p (4K)
-  - 1440p
+- Qality options:
+
   - 1080p
   - 720p
   - 480p
@@ -51,7 +50,7 @@ This repository contains a script to download YouTube videos in various quality 
 
 2. Follow the prompts:
    - Enter the YouTube video URL when prompted.
-   - Choose the desired video quality by entering the corresponding number (1-5).
+   - Choose the desired video quality by entering the corresponding number (1-3).
 
 3. The video will be downloaded to the `ytbymt` folder in your home directory.
 
