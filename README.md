@@ -1,7 +1,7 @@
 
 # YouTube Video Downloader Script
 
-This repository contains a script to download YouTube videos in various quality options (including 2160p, 1440p, 1080p, 720p, and 480p) using `yt-dlp`. The script features a user-friendly terminal interface with color-coded prompts and messages.
+This repository contains a script to download YouTube videos in various quality options (including 1080p, 720p, and 480p) using `yt-dlp`. The script features a user-friendly terminal interface with color-coded prompts and messages.
 
 ## Features
 
