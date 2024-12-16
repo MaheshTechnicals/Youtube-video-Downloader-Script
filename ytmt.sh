@@ -20,24 +20,54 @@ footer() {
     echo -e "${CYAN}====================================================${NC}"
 }
 
-# Check and install yt-dlp and ffmpeg if not installed
-check_install() {
-    pkg_name=$1
-    echo -e "${YELLOW}Checking for ${pkg_name}...${NC}"
-    if ! command -v $pkg_name &> /dev/null; then
-        echo -e "${RED}${pkg_name} not found. Installing...${NC}"
-        pkg install $pkg_name -y
+# Install required dependencies
+install_dependencies() {
+    echo -e "${YELLOW}Installing required dependencies...${NC}"
+    # Update package manager
+    echo -e "${BLUE}Updating package manager...${NC}"
+    apt update && apt upgrade -y
+
+    # Install Python3 and pip if not already installed
+    echo -e "${BLUE}Checking Python3 installation...${NC}"
+    if ! command -v python3 &> /dev/null; then
+        echo -e "${RED}Python3 not found. Installing...${NC}"
+        apt install python3 -y
     else
-        echo -e "${GREEN}${pkg_name} is already installed.${NC}"
+        echo -e "${GREEN}Python3 is already installed.${NC}"
+    fi
+
+    echo -e "${BLUE}Checking pip installation...${NC}"
+    if ! command -v pip3 &> /dev/null; then
+        echo -e "${RED}pip3 not found. Installing...${NC}"
+        apt install python3-pip -y
+    else
+        echo -e "${GREEN}pip3 is already installed.${NC}"
+    fi
+
+    # Install yt-dlp using pip
+    echo -e "${BLUE}Checking yt-dlp installation...${NC}"
+    if ! pip3 show yt-dlp &> /dev/null; then
+        echo -e "${RED}yt-dlp not found. Installing using pip...${NC}"
+        pip3 install -U yt-dlp
+    else
+        echo -e "${GREEN}yt-dlp is already installed.${NC}"
+    fi
+
+    # Install ffmpeg
+    echo -e "${BLUE}Checking ffmpeg installation...${NC}"
+    if ! command -v ffmpeg &> /dev/null; then
+        echo -e "${RED}ffmpeg not found. Installing...${NC}"
+        apt install ffmpeg -y
+    else
+        echo -e "${GREEN}ffmpeg is already installed.${NC}"
     fi
 }
 
 # Start script with a stylish header
 header
 
-# Check and install necessary packages
-check_install yt-dlp
-check_install ffmpeg
+# Install all required dependencies
+install_dependencies
 
 # Ask for YouTube URL
 echo -e "${CYAN}Please enter the YouTube video URL: ${NC}"
@@ -85,3 +115,4 @@ else
 fi
 
 footer
+
