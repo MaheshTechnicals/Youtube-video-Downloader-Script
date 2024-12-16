@@ -72,8 +72,16 @@ fi
 echo -e "${CYAN}Downloading video in ${quality} quality...${NC}"
 yt-dlp -f "$format" --merge-output-format mp4 "$video_url" -o "$HOME/ytbymt/%(title)s.%(ext)s"
 
-# Completion message
-echo -e "${GREEN}Download complete!${NC}"
-echo -e "${CYAN}File saved to $HOME/ytbymt${NC}"
+# Check if the download was successful
+if [ $? -eq 0 ]; then
+    # Move the downloaded file to /sdcard/Download/
+    echo -e "${CYAN}Moving the downloaded file to /sdcard/Download/...${NC}"
+    mv "$HOME/ytbymt/"* /sdcard/Download/
+
+    # Completion message
+    echo -e "${GREEN}Download complete and file moved to /sdcard/Download/!${NC}"
+else
+    echo -e "${RED}Download failed. Please try again.${NC}"
+fi
 
 footer
