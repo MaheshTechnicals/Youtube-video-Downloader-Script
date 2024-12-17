@@ -79,21 +79,16 @@ yt-dlp -F "$video_url"
 
 # Prompt user to choose video quality
 echo -e "${YELLOW}Choose video quality:${NC}"
-echo -e "${BLUE}1.${NC} 1080p"
-echo -e "${BLUE}2.${NC} 720p"
-echo -e "${BLUE}3.${NC} 480p"
-read -p "Enter the number corresponding to your desired quality (1, 2, or 3): " quality_option
+echo -e "${BLUE}1.${NC} 720p"
+echo -e "${BLUE}2.${NC} 480p"
+read -p "Enter the number corresponding to your desired quality (1 or 2): " quality_option
 
 # Set the format based on user input
 case $quality_option in
-    1) format_video="bestvideo[height=1080]"; quality="1080p" ;;
-    2) format_video="bestvideo[height=720]"; quality="720p" ;;
-    3) format_video="bestvideo[height=480]"; quality="480p" ;;
+    1) format="bestvideo[height=720]+bestaudio[ext=m4a]/mp4"; quality="720p" ;;
+    2) format="bestvideo[height=480]+bestaudio[ext=m4a]/mp4"; quality="480p" ;;
     *) echo -e "${RED}Invalid option. Exiting.${NC}"; footer; exit 1 ;;
 esac
-
-# Set audio format
-format_audio="bestaudio"
 
 # Create ytbymt folder if not exists
 if [ ! -d "$HOME/ytbymt" ]; then
@@ -101,10 +96,9 @@ if [ ! -d "$HOME/ytbymt" ]; then
     echo -e "${GREEN}Created ytbymt folder.${NC}"
 fi
 
-# Download video and audio separately, then merge them
-output_path="$HOME/ytbymt/%(title)s.%(ext)s"
+# Download the video to ytbymt folder
 echo -e "${CYAN}Downloading video in ${quality} quality...${NC}"
-yt-dlp -f "$format_video+$format_audio" --merge-output-format mp4 "$video_url" -o "$output_path"
+yt-dlp -f "$format" --merge-output-format mp4 "$video_url" -o "$HOME/ytbymt/%(title)s.%(ext)s"
 
 # Check if the download was successful
 if [ $? -eq 0 ]; then
