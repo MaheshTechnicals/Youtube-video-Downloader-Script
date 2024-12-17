@@ -63,11 +63,26 @@ install_dependencies() {
     fi
 }
 
+# Check for Termux storage folder
+check_storage() {
+    if [ ! -d "/data/data/com.termux/files/home/storage" ]; then
+        echo -e "${YELLOW}Termux storage not set up. Running termux-setup-storage...${NC}"
+        termux-setup-storage
+        sleep 2
+        echo -e "${GREEN}Storage setup completed. Please restart the script if required.${NC}"
+    else
+        echo -e "${GREEN}Termux storage is already set up.${NC}"
+    fi
+}
+
 # Start script with a stylish header
 header
 
 # Install all required dependencies
 install_dependencies
+
+# Check for Termux storage folder
+check_storage
 
 # Ask for YouTube URL
 echo -e "${CYAN}Please enter the YouTube video URL: ${NC}"
@@ -113,3 +128,4 @@ else
 fi
 
 footer
+
