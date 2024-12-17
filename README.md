@@ -27,29 +27,29 @@ This repository contains a script to download YouTube videos in MP4 format with 
 
 1. Open Termux and clone the repository:
 
-   \`\`\`bash
+   ```
    git clone https://github.com/MaheshTechnicals/Youtube-video-Downloader-Script.git
-   \`\`\`
+   ```
 
 2. Navigate to the repository directory:
 
-   \`\`\`bash
+   ```
    cd Youtube-video-Downloader-Script
-   \`\`\`
+   ```
 
 3. Make the script executable:
 
-   \`\`\`bash
+   ```
    chmod +x ytmt.sh
-   \`\`\`
+   ```
 
 ## Usage
 
 1. Run the script:
 
-   \`\`\`bash
+   ```
    ./ytmt.sh
-   \`\`\`
+   ```
 
 2. Follow the prompts:  
    - **Enter the YouTube video URL** when prompted.  
