@@ -20,24 +20,69 @@ footer() {
     echo -e "${CYAN}====================================================${NC}"
 }
 
-# Check and install yt-dlp and ffmpeg if not installed
-check_install() {
-    pkg_name=$1
-    echo -e "${YELLOW}Checking for ${pkg_name}...${NC}"
-    if ! command -v $pkg_name &> /dev/null; then
-        echo -e "${RED}${pkg_name} not found. Installing...${NC}"
-        pkg install $pkg_name -y
+# Install required dependencies
+install_dependencies() {
+    echo -e "${YELLOW}Installing required dependencies...${NC}"
+    # Update package manager
+    echo -e "${BLUE}Updating package manager...${NC}"
+    apt update && apt upgrade -y
+
+    # Install Python3 and pip if not already installed
+    echo -e "${BLUE}Checking Python3 installation...${NC}"
+    if ! command -v python3 &> /dev/null; then
+        echo -e "${RED}Python3 not found. Installing...${NC}"
+        apt install python3 -y
     else
-        echo -e "${GREEN}${pkg_name} is already installed.${NC}"
+        echo -e "${GREEN}Python3 is already installed.${NC}"
+    fi
+
+    echo -e "${BLUE}Checking pip installation...${NC}"
+    if ! command -v pip3 &> /dev/null; then
+        echo -e "${RED}pip3 not found. Installing...${NC}"
+        apt install python3-pip -y
+    else
+        echo -e "${GREEN}pip3 is already installed.${NC}"
+    fi
+
+    # Install yt-dlp using pip
+    echo -e "${BLUE}Checking yt-dlp installation...${NC}"
+    if ! pip3 show yt-dlp &> /dev/null; then
+        echo -e "${RED}yt-dlp not found. Installing using pip...${NC}"
+        pip3 install -U yt-dlp
+    else
+        echo -e "${GREEN}yt-dlp is already installed.${NC}"
+    fi
+
+    # Install ffmpeg
+    echo -e "${BLUE}Checking ffmpeg installation...${NC}"
+    if ! command -v ffmpeg &> /dev/null; then
+        echo -e "${RED}ffmpeg not found. Installing...${NC}"
+        apt install ffmpeg -y
+    else
+        echo -e "${GREEN}ffmpeg is already installed.${NC}"
+    fi
+}
+
+# Check for Termux storage folder
+check_storage() {
+    if [ ! -d "/data/data/com.termux/files/home/storage" ]; then
+        echo -e "${YELLOW}Termux storage not set up. Running termux-setup-storage...${NC}"
+        termux-setup-storage
+        sleep 2
+        echo -e "${GREEN}Storage setup completed. Please restart the script if required.${NC}"
+    else
+        echo -e "${GREEN}Termux storage is already set up.${NC}"
     fi
 }
 
 # Start script with a stylish header
 header
 
-# Check and install necessary packages
-check_install yt-dlp
-check_install ffmpeg
+# Install all required dependencies
+install_dependencies
+
+# Check for Termux storage folder
+check_storage
 
 # Ask for YouTube URL
 echo -e "${CYAN}Please enter the YouTube video URL: ${NC}"
@@ -49,16 +94,14 @@ yt-dlp -F "$video_url"
 
 # Prompt user to choose video quality
 echo -e "${YELLOW}Choose video quality:${NC}"
-echo -e "${BLUE}1.${NC} 1080p"
-echo -e "${BLUE}2.${NC} 720p"
-echo -e "${BLUE}3.${NC} 480p"
-read -p "Enter the number corresponding to your desired quality (1, 2, or 3): " quality_option
+echo -e "${BLUE}1.${NC} 720p"
+echo -e "${BLUE}2.${NC} 480p"
+read -p "Enter the number corresponding to your desired quality (1 or 2): " quality_option
 
 # Set the format based on user input
 case $quality_option in
-    1) format="bestvideo[height=1080]+bestaudio[ext=m4a]/mp4"; quality="1080p" ;;
-    2) format="bestvideo[height=720]+bestaudio[ext=m4a]/mp4"; quality="720p" ;;
-    3) format="bestvideo[height=480]+bestaudio[ext=m4a]/mp4"; quality="480p" ;;
+    1) format="bestvideo[height=720]+bestaudio[ext=m4a]/mp4"; quality="720p" ;;
+    2) format="bestvideo[height=480]+bestaudio[ext=m4a]/mp4"; quality="480p" ;;
     *) echo -e "${RED}Invalid option. Exiting.${NC}"; footer; exit 1 ;;
 esac
 
@@ -72,8 +115,16 @@ fi
 echo -e "${CYAN}Downloading video in ${quality} quality...${NC}"
 yt-dlp -f "$format" --merge-output-format mp4 "$video_url" -o "$HOME/ytbymt/%(title)s.%(ext)s"
 
-# Completion message
-echo -e "${GREEN}Download complete!${NC}"
-echo -e "${CYAN}File saved to $HOME/ytbymt${NC}"
+# Check if the download was successful
+if [ $? -eq 0 ]; then
+    # Move the downloaded file to /sdcard/Download/
+    echo -e "${CYAN}Moving the downloaded file to /sdcard/Download/...${NC}"
+    mv "$HOME/ytbymt/"* /sdcard/Download/
+
+    # Completion message
+    echo -e "${GREEN}Download complete and file moved to /sdcard/Download/!${NC}"
+else
+    echo -e "${RED}Download failed. Please try again.${NC}"
+fi
 
 footer
